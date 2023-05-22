@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=~/.node_exporter_config/node_exporter-1.5.0.linux-amd64/node_exporter --collector.systemd
+ExecStart=~/.node_exporter_config/node_exporter-1.5.0.linux-amd64/node_exporter --collector.systemd --path.procfs=/host/proc --path.rootfs=/rootfs --path.sysfs=/host/sys --collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)
 
 [Install]
 WantedBy=multi-user.target
