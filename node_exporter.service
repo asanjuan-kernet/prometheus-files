@@ -1,0 +1,11 @@
+[Unit]
+Description=Node exporter
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=~/.node_exporter_config/node_exporter-1.5.0.linux-amd64/node_exporter --collector.systemd
+
+[Install]
+WantedBy=multi-user.target
+
