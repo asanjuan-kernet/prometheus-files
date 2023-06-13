@@ -22,6 +22,20 @@ DAEMON_OPTS="--collector.systemd"
 
 set -e
 
+status() {
+    local pid
+    if [ -f $PIDFILE ]; then
+        pid=$(cat $PIDFILE)
+        if ps -p $pid > /dev/null 2>&1; then
+            echo "$NAME is running with PID $pid"
+        else
+            echo "$NAME is not running"
+        fi
+    else
+        echo "$NAME is not running"
+    fi
+}
+
 case "$1" in
   start)
     echo "Starting $DESC: $NAME"
@@ -39,10 +53,14 @@ case "$1" in
     sleep 1
     start-stop-daemon --start --quiet --background --pidfile $PIDFILE --make-pidfile --exec $NODE_EXPORTER_BIN -- $DAEMON_OPTS
     ;;
+  status)
+    status
+    ;;
   *)
-    echo "Usage: /etc/init.d/$NAME {start|stop|restart|force-reload}" >&2
+    echo "Usage: /etc/init.d/$NAME {start|stop|restart|force-reload|status}" >&2
     exit 1
     ;;
 esac
 
 exit 0
+
