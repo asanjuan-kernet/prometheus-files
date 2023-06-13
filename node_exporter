@@ -1,0 +1,48 @@
+# /etc/init.d/node_exporter
+
+### BEGIN INIT INFO
+# Provides:          node_exporter
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Node exporter
+# Description:       Exports system metrics for Prometheus
+### END INIT INFO
+
+# Editar la ruta del ejecutable si es necesario
+NODE_EXPORTER_BIN=/usr/sbin/node_exporter/node_exporter
+NAME=node_exporter
+DESC="Node exporter"
+PIDFILE=/var/run/$NAME.pid
+
+DAEMON_OPTS="--collector.systemd"
+
+[ -x $NODE_EXPORTER_BIN ] || exit 0
+
+set -e
+
+case "$1" in
+  start)
+    echo "Starting $DESC: $NAME"
+    start-stop-daemon --start --quiet --background --pidfile $PIDFILE --make-pidfile --exec $NODE_EXPORTER_BIN -- $DAEMON_OPTS
+    ;;
+  stop)
+    echo "Stopping $DESC: $NAME"
+    start-stop-daemon --stop --quiet --pidfile $PIDFILE
+    rm -f $PIDFILE
+    ;;
+  restart|force-reload)
+    echo "Restarting $DESC: $NAME"
+    start-stop-daemon --stop --quiet --pidfile $PIDFILE
+    rm -f $PIDFILE
+    sleep 1
+    start-stop-daemon --start --quiet --background --pidfile $PIDFILE --make-pidfile --exec $NODE_EXPORTER_BIN -- $DAEMON_OPTS
+    ;;
+  *)
+    echo "Usage: /etc/init.d/$NAME {start|stop|restart|force-reload}" >&2
+    exit 1
+    ;;
+esac
+
+exit 0
