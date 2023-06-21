@@ -1,0 +1,11 @@
+[Unit]
+Description=Disk usage exporter
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/sbin/disk_usage_exporter/disk_usage_exporter -c /usr/sbin/disk_usage_exporter/disk_usage_exporter.yml
+
+[Install]
+WantedBy=multi-user.target
+
